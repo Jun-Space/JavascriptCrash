@@ -1,4 +1,4 @@
-.container-1, .container-2 {
+.container-1, .container-2, .container-3 {
     border: 1px solid black;
     width: 50%; 
     margin: 0 auto;
@@ -15,6 +15,7 @@
     justify-content: space-evenly;
 }
 
+/* flex-box-container-1 내 모든 div에 효과 적용*/
 .flex-box-container-1 div {
     display: flex;
     padding: 10px;
@@ -32,7 +33,7 @@
 } */
 
 
-.flex-box-container-2 {
+.flex-box-container-2, .flex-box-rps {
     display: flex;
     flex-wrap: wrap;
     padding: 5px;
@@ -40,8 +41,13 @@
     border: 2px solid blue;
 }
 
-
+/* flex-box-container-2에 속한 모든 img에 적용함*/
 .flex-box-container-2 img {
     margin: 10px;
     box-shadow: 0px 10px 50px rgba(0,0,0,1);
+}
+
+/* 커서를 위로 가져가면 shadow 효과를 준다*/
+.flex-box-rps img:hover {
+    box-shadow: 0px 10px 50px rgba(37, 50, 233, 1);
 }
