@@ -16,3 +16,12 @@ function ageInDays() {
 function reset() {
     document.getElementById('theAgeInDays').remove()  //h1가 id=theAgeInDays 이므로 찾아서 삭제 // 먼저 들어온 놈부터 삭제하는듯.
 }
+
+
+// Challenge 2: Cat Generator
+function generateCat() {
+    var image = document.createElement('img');
+    var div = document.getElementById('cat-box');
+    image.src = "https://thecatapi.com/api/images/get?format=src&type=gif&size=small"
+    div.appendChild(image);
+}
