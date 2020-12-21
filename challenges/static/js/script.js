@@ -99,3 +99,62 @@ function rpsFrontEnd(humanImageChoice, botImageChoice, finalMessage) {
    document.getElementById('flex-box-rps-div').appendChild(messageDiv);  // 여기서 같은 줄 아무리 추가해도 그만큼 추가되지 않음. Why?
    document.getElementById('flex-box-rps-div').appendChild(botDiv);
 }
+
+
+
+// Challenge 4: 버튼 색깔을 바꿔라!  
+// reset 기능을 위해 원래 색에 대한 정보를 저장하고 있어야 함.
+var all_buttons = document.getElementsByTagName('button'); // button을 가진 모든 엘레멘트 리스트로
+
+var copyAllButtons = [];
+// 모든 버튼 복사해둠. 이것을 활용해서 리셋
+for (let i = 0; i < all_buttons.length; i++) {
+    copyAllButtons.push(all_buttons[i].classList[1])
+}
+
+
+function buttonColorChange(buttonThingy) {
+    if (buttonThingy.value === 'Red') {
+        buttonRed();
+    } else if (buttonThingy.value === 'Green') {
+        buttonGreen();
+    } else if (buttonThingy.value === 'Reset') {
+        buttonColorReset();
+    } else {
+        buttonRandomColors();
+    }
+}
+
+
+function buttonRed() {
+    for (let i = 0; i < all_buttons.length; i++) {
+        all_buttons[i].classList.remove(all_buttons[i].classList[1]);
+        all_buttons[i].classList.add('btn-danger')
+    }
+}
+
+
+function buttonGreen() {
+    for (let i = 0; i < all_buttons.length; i++) {
+        all_buttons[i].classList.remove(all_buttons[i].classList[1]);
+        all_buttons[i].classList.add('btn-success')
+    }
+}
+
+
+function buttonColorReset() {
+    for (let i = 0; i < all_buttons.length; i++) {
+        all_buttons[i].classList.remove(all_buttons[i].classList[1]);
+        all_buttons[i].classList.add(copyAllButtons[i])
+    }
+}
+
+
+function buttonRandomColors() {
+    var choices = ['btn-primary', 'btn-danger', 'btn-success', 'btn-warning']
+    for (let i = 0; i < all_buttons.length; i++) {
+        all_buttons[i].classList.remove(all_buttons[i].classList[1]);
+        all_buttons[i].classList.add(choices[Math.floor(Math.random()*4)])
+    }
+}
+
