@@ -5,6 +5,12 @@
     text-align: center;
 }
 
+.container-5 {
+    border: 1px solid black;
+    width: 75%;
+    margin: 0 auto;
+    text-align: center;
+}
 
 .flex-box-container-1 {
     display: flex;
@@ -33,12 +39,48 @@
 } */
 
 
-.flex-box-container-2, .flex-box-rps, .flex-box-pick-color {
+.flex-box-container-2, .flex-box-rps, .flex-box-pick-color, .flex-blackjack-row-1, .flex-box-blackjack-row-2, .flex-blackjack-row-3 {
     display: flex;
     flex-wrap: wrap;
+    flex-direction: row;
     padding: 5px;
     justify-content: space-around;
     border: 2px solid blue;
+}
+
+
+.flex-blackjack-row-1, .flex-blackjack-row-2 {
+    background: url('../images/background.jpg') center;
+    color: #ffffff;
+}
+
+.flex-blackjack-row-1 div {
+    border: 1px solid black;
+    padding: 10px;
+    flex: 1;  /* give yourself equal amount of priority in space */
+    text-align: center;
+    height: 350px;
+}
+
+.flex-blackjack-row-1 img {
+    width: 25%;
+    padding: 10px;
+}
+
+.flex-blackjack-row-2 div {
+    border: 1px solid salmon;
+    padding: 10px;
+}
+
+
+table, th, td {
+    padding: 5px;
+    border: 1px solid brown;
+}
+
+.flex-blackjack-row-2 button {
+    border: 1px solid black;
+    padding: 10px;
 }
 
 /* flex-box-container-2에 속한 모든 img에 적용함*/
