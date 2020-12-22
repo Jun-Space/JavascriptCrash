@@ -1,3 +1,7 @@
+// Rules to know
+// 1. Don't use var [globally scoped], use const(immutalbe) or let(mutable) [block scoped]
+// 2. Don't user innerHTML due to security reasons, but .textContent instead
+
 // Challenge 1: Your Age in Days
 
 
@@ -158,3 +162,192 @@ function buttonRandomColors() {
     }
 }
 
+
+
+// Challenge 5: 블랙잭
+let blackjackGame = {
+    'you': {'scoreSpan': '#your-blackjack-result', 'div': '#your-box', 'score': 0},
+    'dealer': {'scoreSpan': '#dealer-blackjack-result', 'div': '#dealer-box', 'score': 0},
+    'cards': ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'K', 'J', 'Q', 'A'],
+    'cardsMap': {'2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':10, 'K':10, 'J':10, 'Q':10, 'A':[1,11]},
+    'wins': 0,
+    'losses': 0,
+    'draws': 0,
+    'isStand': false,
+    'turnsOver': false,
+}
+
+const YOU = blackjackGame['you']
+const DEALER = blackjackGame['dealer']
+
+const hitSound = new Audio('static/sounds/swish.m4a')
+const winSound = new Audio('static/sounds/cash.mp3')
+const lossSound = new Audio('static/sounds/aww.mp3')
+
+document.querySelector('#blackjack-hit-button').addEventListener('click', blackjackHit)   //blackjack-hit-button의 click시 blackjackHit실행. HTML 안에 onclick이런거 안써도 됨.
+
+document.querySelector('#blackjack-stand-button').addEventListener('click', dealerLogic)
+
+document.querySelector('#blackjack-deal-button').addEventListener('click', blackjackDeal)
+
+function blackjackHit() {
+    if (blackjackGame['isStand'] === false) {
+        let card = randomCard();
+        showCard(card, YOU)
+        updateScore(card, YOU)
+        showScore(YOU)
+    }
+    
+}
+
+
+function randomCard() {
+    let randomIndex = Math.floor(Math.random() * 13);
+    return blackjackGame['cards'][randomIndex]
+}
+
+
+function showCard(card, activePlayer) {
+    if (activePlayer['score'] <= 21) {
+        let cardImage = document.createElement('img');  // <img> </img>
+        cardImage.src = `static/images/${card}.png`;
+        document.querySelector(activePlayer['div']).appendChild(cardImage);
+        hitSound.play();
+    }
+}
+
+
+function updateScore(card, activePlayer) {
+    if (card === 'A') {
+    // If adding 11 keeps me below 21, add 11, Otherwise, add 1.
+        if (activePlayer['score'] + blackjackGame['cardsMap'][card][1] <= 21) {
+            activePlayer['score'] += blackjackGame['cardsMap'][card][1]
+        } else {
+            activePlayer['score'] += blackjackGame['cardsMap'][card][0]
+        }
+    } else {
+        activePlayer['score'] += blackjackGame['cardsMap'][card]
+    }
+}
+
+function showScore(activePlayer) {
+    if (activePlayer['score'] > 21) {
+        document.querySelector(activePlayer['scoreSpan']).textContent = 'BUST!';
+        document.querySelector(activePlayer['scoreSpan']).style.color = 'red';
+    } else {
+        document.querySelector(activePlayer['scoreSpan']).textContent = activePlayer['score']
+    }
+}
+
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+async function dealerLogic() {
+    blackjackGame['isStand'] = true;  // Stand를 한번 누르면 더이상 Hit을 할 수 없다.
+
+    while (DEALER['score'] < 16 && blackjackGame['isStand'] === true )  {
+        let card = randomCard();
+        showCard(card, DEALER);
+        updateScore(card, DEALER);
+        showScore(DEALER);
+        await sleep(700);
+    }
+
+    blackjackGame['turnsOver'] = true;  // 게임이 끝나야 Deal을 누를 수 있게 한다. (deal 버튼 활성화)
+    let winner = computeWinner()
+    showResult(winner)
+    
+}
+
+
+// compute winner and return who just won
+function computeWinner() {
+    let winner;
+
+    if (YOU['score'] <= 21) {
+        // condition: higher score than dealer or when dealer busts but you're under
+        if (YOU['score'] > DEALER['score'] || DEALER['score'] > 21) {
+            blackjackGame['wins']++;
+            winner = YOU;
+
+        } else if (YOU['score'] < DEALER['score']) {
+            blackjackGame['losses']++;
+            winner = DEALER;
+
+        } else if (YOU['score'] === DEALER['score']) {
+            blackjackGame['draws']++;
+            
+        }
+    
+    // condition: when user busts but dealer doesn't
+    } else if (YOU['score'] > 21 && DEALER['score'] <= 21) {
+        blackjackGame['losses']++;
+        winner = DEALER;
+     
+    // condition: both bust
+    } else if (YOU['score'] > 21 && DEALER['score'] > 21) {
+        blackjackGame['draws']++;
+    }
+    return winner
+}
+
+
+function blackjackDeal() {    
+    if (blackjackGame['turnsOver'] === true) {  // 게임의 turn이 종료되어야 deal버튼을 실행시킬 수 있다. 
+
+        blackjackGame['isStand'] = false;  // 다시 게임 시작하면 Hit 할 수 있도록
+
+        let yourImages = document.querySelector('#your-box').querySelectorAll('img');
+        let dealerImages = document.querySelector('#dealer-box').querySelectorAll('img');
+        for (let i = 0; i < yourImages.length; i++) {
+            yourImages[i].remove();
+        }
+
+        for (let i = 0; i < dealerImages.length; i++) {
+            dealerImages[i].remove();
+        }
+
+        YOU['score'] = 0;
+        DEALER['score'] = 0;
+        document.querySelector('#your-blackjack-result').textContent = 0;
+        document.querySelector('#dealer-blackjack-result').textContent = 0;
+        document.querySelector('#your-blackjack-result').style.color = '#ffffff';
+        document.querySelector('#dealer-blackjack-result').style.color = '#ffffff';
+
+        document.querySelector('#blackjack-result').textContent = '강원랜드'
+        document.querySelector('#blackjack-result').style.color = 'black'
+
+        blackjackGame['turnsOver'] = false;  // 다시 게임 시작하면 게임 끝나기 전까지 deal 누를 수 없도록 (deal 버튼 비활성화)
+    }
+    
+}
+
+
+function showResult(winner) {
+    let message, messageColor;
+
+    // if (blackjackGame['turnsOver'] === true) {
+        if (winner === YOU) {
+            document.querySelector('#wins').textContent = blackjackGame['wins']
+            message = 'You won!';
+            messageColor = 'green';
+            winSound.play()
+        } else if (winner === DEALER) {
+            document.querySelector('#losses').textContent = blackjackGame['losses']
+            message = 'You lost!';
+            messageColor = 'red';
+            lossSound.play();
+        } else {
+            document.querySelector('#draws').textContent = blackjackGame['draws']
+            message = 'You drew!';
+            messageColor = 'blue';
+        }
+    
+        document.querySelector('#blackjack-result').textContent = message;
+        document.querySelector('#blackjack-result').style.color = messageColor;
+    // }
+
+}
